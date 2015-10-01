@@ -1,19 +1,25 @@
 from bs4 import BeautifulSoup
+import urllib2
 from urllib2 import urlopen
 import csv
+import urllib
 import re
+import time
+from random import randint
 
 # "toronto", ottawa, montreal.en, calgary, edmonton, hamilton, winnipeg, victoria, reddeer, kamloops, kelowna, nanaimo, sunshine, whistler, abbotsford, halifax, lethbridge, hat, peace, ftmcmurray, cariboo, comoxvalley, cranbrook, princegeorge, skeena, newbrunswick, newfoundland, yellowknife, barrie, belleville, brantford, chatham, cornwall, guelph, hamilton, kingston, kitchener, londonon, niagara, owensound, peterborough, sarnia, soo, sudbury, thunderbay, windsor, pei, quebec, saguenay, sherbrooke, troisrivieres, regina, saskatoon, whitehorse 
 
 # cat *.csv >merged.csv 
 
-cpages = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" ]
+cpages = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
-# cities = ["hamilton", "winnipeg", "reddeer",  -> "sunshine", "whistler", "abbotsford", "halifax", "lethbridge", "hat", "peace", "ftmcmurray", "cariboo", "comoxvalley", "cranbrook", "princegeorge", "skeena", "newbrunswick", "newfoundland", "yellowknife", "barrie", "belleville", "brantford", "chatham", "cornwall", "guelph", "hamilton", "kingston", "kitchener", "londonon", "niagara", "owensound", "peterborough", "sarnia", "soo", "sudbury", "thunderbay", "windsor", "pei", "quebec", "saguenay", "sherbrooke", "troisrivieres", "regina", "saskatoon", "whitehorse"]
+#"11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" ]
+
+# cities = ["hamilton", "winnipeg", "reddeer", "sunshine",  ->  "whistler", "abbotsford", "halifax", "lethbridge", "hat", "peace", "ftmcmurray", "cariboo", "comoxvalley", "cranbrook", "princegeorge", "skeena", "newbrunswick", "newfoundland", "yellowknife", "barrie", "belleville", "brantford", "chatham", "cornwall", "guelph", "hamilton", "kingston", "kitchener", "londonon", "niagara", "owensound", "peterborough", "sarnia", "soo", "sudbury", "thunderbay", "windsor", "pei", "quebec", "saguenay", "sherbrooke", "troisrivieres", "regina", "saskatoon", "whitehorse"]
 # cities = ["toronto", "ottawa", "montreal.en", "calgary", "edmonton", "kamloops", "kelowna", "victoria", => "nanaimo"]
 
 
-cities = ["toronto", "ottawa", "montreal.en"]
+cities = ["whistler"]
 
 i=0
 
@@ -22,6 +28,8 @@ while i<len(cpages):
     city=0
 
     while city<len(cities):
+
+        time.sleep(randint(1,10)) # delays for 1-10 seconds
 
         base_url = ("http://"+ cities[city] +".craigslist.ca/search/rea?s="+ cpages[i] +"00&min_price=10000&sort=date")   
 
@@ -57,6 +65,8 @@ while i<len(cpages):
 
         #white in csv
                 output.writerow([latlng, price, rooms ])
+
+
         city+=1
     i+=1 
             

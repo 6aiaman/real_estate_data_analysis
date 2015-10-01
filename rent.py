@@ -4,28 +4,31 @@ from urllib2 import urlopen
 import csv
 import urllib
 import re
+import time
+from random import randint
 
 # "toronto", ottawa, montreal.en, calgary, edmonton, hamilton, winnipeg, victoria, reddeer, kamloops, kelowna, nanaimo, sunshine, whistler, abbotsford, halifax, lethbridge, hat, peace, ftmcmurray, cariboo, comoxvalley, cranbrook, princegeorge, skeena, newbrunswick, newfoundland, yellowknife, barrie, belleville, brantford, chatham, cornwall, guelph, hamilton, kingston, kitchener, londonon, niagara, owensound, peterborough, sarnia, soo, sudbury, thunderbay, windsor, pei, quebec, saguenay, sherbrooke, troisrivieres, regina, saskatoon, whitehorse 
 
 # cat *.csv >merged.csv 
-# 
-cpages = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" ]
+# cpages = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" ]
 
-# cities = ["toronto", "ottawa", "montreal.en", "calgary", "edmonton", "hamilton", "winnipeg", "victoria", "reddeer", "kamloops", "kelowna", "nanaimo", "sunshine", "whistler", "abbotsford", "halifax", "lethbridge", "hat", "peace", "ftmcmurray", "cariboo", "comoxvalley", "cranbrook", "princegeorge", "skeena", "newbrunswick", "newfoundland", "yellowknife", "barrie", "belleville", "brantford", "chatham", "cornwall", "guelph", "hamilton", "kingston", "kitchener", "londonon", "niagara", "owensound", "peterborough", "sarnia", "soo", "sudbury", "thunderbay", "windsor", "pei", "quebec", "saguenay", "sherbrooke", "troisrivieres", "regina", "saskatoon", "whitehorse"]
-cities = ["toronto", "ottawa", "montreal.en"]
-# "ottawa", "montreal.en" 
-# "calgary", "edmonton", "kamloops", "kelowna", "victoria", "nanaimo"]
+# cpages = [ "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" ]
+cpages = ["0", "1", "2", "3"]
 
-i=0
+# cities = ["toronto", "ottawa", "montreal.en", "calgary", "edmonton", "hamilton", "winnipeg", "victoria", "reddeer", "kamloops", "kelowna", "nanaimo", "sunshine", "whistler", "abbotsford", "halifax", "lethbridge", "hat", "peace", "ftmcmurray", "cariboo", "comoxvalley", "cranbrook", "princegeorge", "skeena", "newbrunswick", "newfoundland", "yellowknife", "barrie", "belleville", "brantford", "chatham", "cornwall", "guelph", "hamilton", "kingston", "kitchener", "londonon", "niagara", "owensound", "peterborough", "sarnia", "soo", "sudbury", "thunderbay", => "windsor", "pei", "quebec", "saguenay", "sherbrooke", "troisrivieres", "regina", "saskatoon", "whitehorse"]
+cities = ["winnipeg"]
+
+# "lethbridge", "hat", "peace", "ftmcmurray", "cariboo", "comoxvalley", "cranbrook", "princegeorge", "skeena", "newbrunswick", "newfoundland", "yellowknife", "barrie", "belleville", "brantford", "chatham", "cornwall", "guelph", "hamilton", "kingston", "kitchener", "londonon", "niagara", "owensound", "peterborough", "sarnia", "soo", "sudbury", "thunderbay"]
+# "ottawa", "montreal.en", "calgary", "edmonton", "kamloops", "kelowna", "victoria", "nanaimo"]
 
 
+city=0
 
+while city<len(cities): 
 
-while i<len(cpages): 
+    i=0
 
-    city=0
-
-    while city<len(cities):
+    while city<len(cpages):
 
         base_url = "http://"+ cities[city] +".craigslist.ca/search/apa?s="+ cpages[i] +"00&max_price=15000&min_price=400"  
 
@@ -36,13 +39,11 @@ while i<len(cpages):
         with open( cities[city] +"Rent_price" + cpages[i] + ".csv", "w") as f:
             fieldnames = ("lat-lng", "price", "number of rooms")
             output = csv.writer(f)
-            # output.writerow(fieldnames)
+            output.writerow(fieldnames)
             
+
             for url in post_urls:
                 url = url.replace("http://"+ cities[city] +".craigslist.ca", "")  # inconsistent URL
-
-                req = urllib2.Request(url, headers={'User-Agent' : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.30 (KHTML, like Gecko) Ubuntu/11.04 Chromium/12.0.742.112 Chrome/12.0.742.112 Safari/534.30"}) 
-
                 page = urlopen("http://"+ cities[city] +".craigslist.ca{0}".format(url))
                 soup = BeautifulSoup(page.read()).find("section", "body")
 
@@ -64,8 +65,11 @@ while i<len(cpages):
 
         #white in csv
                 output.writerow([latlng, price, rooms ])
-        city+=1
-    i+=1 
+        i+=1
+
+        time.sleep(randint(1,10)) # delays for 1-10 seconds
+
+    city+=1 
             
        
 
